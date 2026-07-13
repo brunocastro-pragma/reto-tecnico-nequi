@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+
+      # The runner has a Docker daemon, so the Testcontainers test runs here for real. Fails below
+      # 70% line coverage.
+      - name: Build, test and check coverage
+        run: ./mvnw -B clean verify
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-aggregate
+          path: coverage-report/target/site/jacoco-aggregate/
+
+      - name: Verify the Docker image builds
+        run: docker build -f deployment/Dockerfile -t franchise-api:${{ github.sha }} .
+
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Check formatting
+        run: terraform fmt -check -recursive infra/
+
+      # -backend=false: validation needs no S3 state, and CI has no credentials for it.
+      - name: Validate every environment
+        run: |
+          for env in infra/environments/*/; do
+            echo "== $env"
+            terraform -chdir="$env" init -backend=false
+            terraform -chdir="$env" validate
+          done
