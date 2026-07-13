@@ -8,7 +8,9 @@ spring:
     # Secret managed and rotated by RDS. Its JSON has two keys: username and password.
     import: aws-secretsmanager:${DB_SECRET_ARN}
   r2dbc:
-    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    # sslMode=require: RDS rejects unencrypted connections (its pg_hba.conf has no entry for
+    # them), and the R2DBC driver connects in the clear unless told otherwise.
+    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslMode=require
     username: ${username}
     password: ${password}
   cloud:

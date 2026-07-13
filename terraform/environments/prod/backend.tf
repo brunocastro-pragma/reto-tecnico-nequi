@@ -2,7 +2,7 @@
 # in dev can never touch what runs in prod.
 terraform {
   backend "s3" {
-    bucket         = "REPLACE_ME-franchise-api-tfstate"
+    bucket         = "franchise-api-tfstate-e2c4a5d0"
     key            = "prod/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "franchise-api-tflock"
