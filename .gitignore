@@ -1,0 +1,26 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Terraform. The state is the map of everything that exists in AWS and it holds resource
+# attributes in the clear -- it belongs in S3, never in git.
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+.terraform.lock.hcl
+
+.env
+*.log
+.DS_Store
+
+# Challenge statement and personal preparation notes: not part of the deliverable.
+DOC/
+BLUEPRINT.md
