@@ -1,0 +1,213 @@
+{
+  "info": {
+    "name": "Franchise API",
+    "description": "The nine endpoints, in the order of a real session. Each request stores the id it creates into a collection variable, so running the folder top to bottom works with no copy-pasting of ids.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "franchiseId", "value": "", "type": "string" },
+    { "key": "branchId", "value": "", "type": "string" },
+    { "key": "productId", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Create franchise",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('franchiseId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nequi Foods\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/v1/franchises", "host": ["{{baseUrl}}"], "path": ["api", "v1", "franchises"] }
+      }
+    },
+    {
+      "name": "2. Add branch",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('branchId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Branch Medellin Centro\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches"]
+        }
+      }
+    },
+    {
+      "name": "3. Add product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set('productId', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Espresso\",\n  \"stock\": 40\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches/{{branchId}}/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches", "{{branchId}}", "products"]
+        }
+      }
+    },
+    {
+      "name": "5. Update product stock",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"stock\": 200\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches/{{branchId}}/products/{{productId}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches", "{{branchId}}", "products", "{{productId}}", "stock"]
+        }
+      }
+    },
+    {
+      "name": "6. Top stock product per branch",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/top-stock-products",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "top-stock-products"]
+        }
+      }
+    },
+    {
+      "name": "7. Rename franchise",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nequi Foods LATAM\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}"]
+        }
+      }
+    },
+    {
+      "name": "8. Rename branch",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Branch Poblado\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches/{{branchId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches", "{{branchId}}"]
+        }
+      }
+    },
+    {
+      "name": "9. Rename product",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ristretto\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches/{{branchId}}/products/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches", "{{branchId}}", "products", "{{productId}}"]
+        }
+      }
+    },
+    {
+      "name": "4. Remove product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches/{{branchId}}/products/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches", "{{branchId}}", "products", "{{productId}}"]
+        }
+      }
+    },
+    {
+      "name": "Error: 404 unknown franchise",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Ghost\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/does-not-exist",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "does-not-exist"]
+        }
+      }
+    },
+    {
+      "name": "Error: 400 negative stock",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Broken\",\n  \"stock\": -5\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/franchises/{{franchiseId}}/branches/{{branchId}}/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "franchises", "{{franchiseId}}", "branches", "{{branchId}}", "products"]
+        }
+      }
+    }
+  ]
+}
