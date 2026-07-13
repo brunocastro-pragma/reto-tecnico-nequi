@@ -58,6 +58,22 @@ HTTP → Netty → RouterFunction → Handler → UseCase → Port ─┐
 
 The whole trip is a single `Mono`/`Flux` chain. Nothing is computed until Netty subscribes, and there is no `.block()` anywhere in the codebase.
 
+### Repository layout
+
+```
+domain/            the business core: entities, ports, use cases
+infrastructure/    the adapters of the hexagon -- Java code
+applications/      the runnable Spring Boot application
+coverage-report/   aggregated coverage and the 70% gate
+deployment/        everything that is not the application
+  ├── docker/      image and the local compose stack
+  └── terraform/   the AWS infrastructure
+docs/              Postman collection
+```
+
+`infrastructure/` is the hexagonal layer — handlers and repository adapters. The cloud
+infrastructure is a different thing entirely and lives in `deployment/terraform/`.
+
 ### Module layout
 
 | Module | What lives there | May depend on |
@@ -97,7 +113,7 @@ The whole trip is a single `Mono`/`Flux` chain. Nothing is computed until Netty 
 ### Start
 
 ```bash
-docker compose -f deployment/docker-compose.yml up --build
+docker compose -f deployment/docker/docker-compose.yml up --build
 ```
 
 That builds the image, starts PostgreSQL, waits until it is genuinely accepting connections, creates the schema, and starts the API on port 8080.
@@ -140,7 +156,7 @@ curl -s $BASE/$FRANCHISE/top-stock-products | jq
 ### Stop
 
 ```bash
-docker compose -f deployment/docker-compose.yml down -v
+docker compose -f deployment/docker/docker-compose.yml down -v
 ```
 
 ### Building without Docker
@@ -260,16 +276,16 @@ The database password is never in the code, in the image, or in the task definit
 ### 1. Create the state backend (once per account)
 
 ```bash
-terraform -chdir=infra/bootstrap init
-terraform -chdir=infra/bootstrap apply
+terraform -chdir=deployment/terraform/bootstrap init
+terraform -chdir=deployment/terraform/bootstrap apply
 ```
 
-Copy the bucket name it prints into the `bucket` field of `infra/environments/dev/backend.tf`.
+Copy the bucket name it prints into the `bucket` field of `deployment/terraform/environments/dev/backend.tf`.
 
 ### 2. Provision
 
 ```bash
-cd infra/environments/dev
+cd deployment/terraform/environments/dev
 terraform init
 terraform apply -var="image_tag=1.0.0"
 ```
@@ -277,9 +293,9 @@ terraform apply -var="image_tag=1.0.0"
 ### 3. Push the image
 
 ```bash
-ECR=$(terraform -chdir=infra/environments/dev output -raw ecr_repository_url)
+ECR=$(terraform -chdir=deployment/terraform/environments/dev output -raw ecr_repository_url)
 aws ecr get-login-password | docker login --username AWS --password-stdin $ECR
-docker build -f deployment/Dockerfile -t $ECR:1.0.0 .
+docker build -f deployment/docker/Dockerfile -t $ECR:1.0.0 .
 docker push $ECR:1.0.0
 ```
 
@@ -287,8 +303,8 @@ docker push $ECR:1.0.0
 
 ```bash
 aws ecs update-service \
-  --cluster  $(terraform -chdir=infra/environments/dev output -raw ecs_cluster_name) \
-  --service  $(terraform -chdir=infra/environments/dev output -raw ecs_service_name) \
+  --cluster  $(terraform -chdir=deployment/terraform/environments/dev output -raw ecs_cluster_name) \
+  --service  $(terraform -chdir=deployment/terraform/environments/dev output -raw ecs_service_name) \
   --force-new-deployment
 ```
 
@@ -297,7 +313,7 @@ The API is then at the URL printed by `terraform output api_url`.
 ### Terraform layout
 
 ```
-infra/
+deployment/terraform/
 ├── bootstrap/            S3 state bucket + DynamoDB lock table (run once)
 ├── modules/
 │   ├── networking/       VPC, public/private subnets, NAT, chained security groups

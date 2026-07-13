@@ -19,8 +19,8 @@ services:
   api:
     build:
       # Context is the repository root: the Dockerfile copies every module's pom.
-      context: ..
-      dockerfile: deployment/Dockerfile
+      context: ../..
+      dockerfile: deployment/docker/Dockerfile
     container_name: franchise-api
     depends_on:
       postgres:

@@ -20,7 +20,3 @@ crash.log
 .env
 *.log
 .DS_Store
-
-# Challenge statement and personal preparation notes: not part of the deliverable.
-DOC/
-BLUEPRINT.md
