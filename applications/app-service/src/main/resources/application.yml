@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: franchise-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  r2dbc:
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Only what the ALB health check needs. An open /actuator/env behind a public load
+        # balancer leaks the whole configuration.
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      postgres:
+        slidingWindowType: COUNT_BASED
+        # Minimum sample of 10 calls: below that, one failure during a deploy reads as a 100%
+        # failure rate and trips the breaker.
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - org.springframework.dao.TransientDataAccessException
+          - org.springframework.dao.DataAccessResourceFailureException
+          - io.r2dbc.spi.R2dbcNonTransientResourceException
+          - java.util.concurrent.TimeoutException
+  retry:
+    instances:
+      postgres:
+        maxAttempts: 3
+        # Backoff of 200ms then 400ms: retrying immediately adds load to a database that is
+        # already struggling.
+        waitDuration: 200ms
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        # Transient failures only. Retrying a constraint violation just delays the same error.
+        retryExceptions:
+          - org.springframework.dao.TransientDataAccessException
+          - org.springframework.dao.DataAccessResourceFailureException
+          - io.r2dbc.spi.R2dbcNonTransientResourceException
+          - java.util.concurrent.TimeoutException
+  timelimiter:
+    instances:
+      postgres:
+        # Indexed lookups: 2s already means something is wrong. Without a timeout a hung
+        # connection holds the request open until the client gives up.
+        timeoutDuration: 2s
+        cancelRunningFuture: true
+
+logging:
+  level:
+    root: INFO
+    co.com.nequi.franchise: INFO
