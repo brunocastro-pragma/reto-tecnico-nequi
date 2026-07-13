@@ -2,7 +2,7 @@ spring:
   application:
     name: franchise-api
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:local}
+    active: ${SPRING_PROFILES_ACTIVE:aws}
   r2dbc:
     pool:
       enabled: true

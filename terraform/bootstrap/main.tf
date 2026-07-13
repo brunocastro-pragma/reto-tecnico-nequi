@@ -2,8 +2,8 @@
 # state stays local -- it is what creates the backend. It runs once per account, and if that state
 # were lost the recovery is `terraform import` of two resources.
 #
-#   terraform -chdir=deployment/terraform/bootstrap init
-#   terraform -chdir=deployment/terraform/bootstrap apply
+#   terraform -chdir=terraform/bootstrap init
+#   terraform -chdir=terraform/bootstrap apply
 #
 # Then copy the bucket name it outputs into each environment's backend.tf.
 

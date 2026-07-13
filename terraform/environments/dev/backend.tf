@@ -2,7 +2,7 @@
 # applies would corrupt each other. The key includes the environment, so dev and prod never
 # overwrite one another.
 #
-# The bucket and the table come from deployment/terraform/bootstrap. Put the bucket name it outputs here, then
+# The bucket and the table come from terraform/bootstrap. Put the bucket name it outputs here, then
 # run `terraform init`.
 terraform {
   backend "s3" {

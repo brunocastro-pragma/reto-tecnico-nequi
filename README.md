@@ -10,7 +10,7 @@ Built with **Spring WebFlux** (RouterFunctions, no controllers), **hexagonal arc
 
 - [Architecture](#architecture)
 - [Tech stack](#tech-stack)
-- [Running it locally](#running-it-locally)
+- [Trying the API](#trying-the-api)
 - [API](#api)
 - [Tests](#tests)
 - [Resilience](#resilience)
@@ -65,14 +65,13 @@ domain/            the business core: entities, ports, use cases
 infrastructure/    the adapters of the hexagon -- Java code
 applications/      the runnable Spring Boot application
 coverage-report/   aggregated coverage and the 70% gate
-deployment/        everything that is not the application
-  ├── docker/      image and the local compose stack
-  └── terraform/   the AWS infrastructure
+deployment/        the Dockerfile
+terraform/         the AWS infrastructure
 docs/              Postman collection
 ```
 
 `infrastructure/` is the hexagonal layer — handlers and repository adapters. The cloud
-infrastructure is a different thing entirely and lives in `deployment/terraform/`.
+infrastructure is a different thing entirely and lives in `terraform/`.
 
 ### Module layout
 
@@ -103,34 +102,17 @@ infrastructure is a different thing entirely and lives in `deployment/terraform/
 
 ---
 
-## Running it locally
+## Trying the API
 
-### Prerequisites
+The service runs on AWS. It has no local mode: the database is an RDS instance in a private
+subnet, reachable only from the ECS tasks, so there is nothing to point a laptop at. To stand up
+your own copy, follow [Deploying to AWS](#deploying-to-aws) — it takes one `terraform apply`.
 
-- Docker (with Docker Compose)
-- Nothing else. The image is built inside Docker, so you do not need Java or Maven installed to run it.
-
-### Start
-
-```bash
-docker compose -f deployment/docker/docker-compose.yml up --build
-```
-
-That builds the image, starts PostgreSQL, waits until it is genuinely accepting connections, creates the schema, and starts the API on port 8080.
-
-Check it is up:
+Once deployed, `terraform output api_url` prints the base URL. Everything below assumes it is in
+`$BASE`:
 
 ```bash
-curl http://localhost:8080/actuator/health
-# {"status":"UP"}
-```
-
-Open the docs: **http://localhost:8080/swagger-ui.html**
-
-### Try it end to end
-
-```bash
-BASE=http://localhost:8080/api/v1/franchises
+BASE=$(terraform -chdir=terraform/environments/dev output -raw api_url)/api/v1/franchises
 
 # 1. Create a franchise
 FRANCHISE=$(curl -s -X POST $BASE \
@@ -153,19 +135,17 @@ curl -s -X POST $BASE/$FRANCHISE/branches/$POBLADO/products \
 curl -s $BASE/$FRANCHISE/top-stock-products | jq
 ```
 
-### Stop
+Swagger UI is at `/swagger-ui.html` on the same host. The Postman collection in
+[`docs/`](docs/postman_collection.json) has the same calls: set its `baseUrl` variable to the
+deployed URL.
 
-```bash
-docker compose -f deployment/docker/docker-compose.yml down -v
-```
+### Building the code
 
-### Building without Docker
-
-Needs JDK 17+ and a PostgreSQL running on `localhost:5432` (database `franchise`, user and password `franchise`):
+The build needs nothing but a JDK 17+ — the tests bring their own PostgreSQL through
+Testcontainers, so they do not need the deployed database:
 
 ```bash
 ./mvnw clean verify
-java -jar applications/app-service/target/franchise-api.jar
 ```
 
 ---
@@ -276,16 +256,16 @@ The database password is never in the code, in the image, or in the task definit
 ### 1. Create the state backend (once per account)
 
 ```bash
-terraform -chdir=deployment/terraform/bootstrap init
-terraform -chdir=deployment/terraform/bootstrap apply
+terraform -chdir=terraform/bootstrap init
+terraform -chdir=terraform/bootstrap apply
 ```
 
-Copy the bucket name it prints into the `bucket` field of `deployment/terraform/environments/dev/backend.tf`.
+Copy the bucket name it prints into the `bucket` field of `terraform/environments/dev/backend.tf`.
 
 ### 2. Provision
 
 ```bash
-cd deployment/terraform/environments/dev
+cd terraform/environments/dev
 terraform init
 terraform apply -var="image_tag=1.0.0"
 ```
@@ -293,9 +273,9 @@ terraform apply -var="image_tag=1.0.0"
 ### 3. Push the image
 
 ```bash
-ECR=$(terraform -chdir=deployment/terraform/environments/dev output -raw ecr_repository_url)
+ECR=$(terraform -chdir=terraform/environments/dev output -raw ecr_repository_url)
 aws ecr get-login-password | docker login --username AWS --password-stdin $ECR
-docker build -f deployment/docker/Dockerfile -t $ECR:1.0.0 .
+docker build -f deployment/Dockerfile -t $ECR:1.0.0 .
 docker push $ECR:1.0.0
 ```
 
@@ -303,8 +283,8 @@ docker push $ECR:1.0.0
 
 ```bash
 aws ecs update-service \
-  --cluster  $(terraform -chdir=deployment/terraform/environments/dev output -raw ecs_cluster_name) \
-  --service  $(terraform -chdir=deployment/terraform/environments/dev output -raw ecs_service_name) \
+  --cluster  $(terraform -chdir=terraform/environments/dev output -raw ecs_cluster_name) \
+  --service  $(terraform -chdir=terraform/environments/dev output -raw ecs_service_name) \
   --force-new-deployment
 ```
 
@@ -313,7 +293,7 @@ The API is then at the URL printed by `terraform output api_url`.
 ### Terraform layout
 
 ```
-deployment/terraform/
+terraform/
 ├── bootstrap/            S3 state bucket + DynamoDB lock table (run once)
 ├── modules/
 │   ├── networking/       VPC, public/private subnets, NAT, chained security groups
