@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BranchHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">franchise-api</a> &gt; <a href="index.source.html" class="el_package">co.com.nequi.franchise.api</a> &gt; <span class="el_source">BranchHandler.java</span></div><h1>BranchHandler.java</h1><pre class="source lang-java linenums">package co.com.nequi.franchise.api;
+
+import co.com.nequi.franchise.api.dto.Requests.CreateBranchRequest;
+import co.com.nequi.franchise.api.dto.Requests.UpdateNameRequest;
+import co.com.nequi.franchise.api.mapper.DtoMapper;
+import co.com.nequi.franchise.api.validation.RequestValidator;
+import co.com.nequi.franchise.usecase.branch.AddBranchUseCase;
+import co.com.nequi.franchise.usecase.branch.UpdateBranchNameUseCase;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
+
+@Component
+@RequiredArgsConstructor
+public class BranchHandler {
+
+    private final AddBranchUseCase addBranchUseCase;
+    private final UpdateBranchNameUseCase updateBranchNameUseCase;
+    private final RequestValidator validator;
+
+    public Mono&lt;ServerResponse&gt; add(ServerRequest request) {
+<span class="fc" id="L25">        String franchiseId = request.pathVariable(&quot;franchiseId&quot;);</span>
+<span class="fc" id="L26">        return request.bodyToMono(CreateBranchRequest.class)</span>
+<span class="fc" id="L27">                .flatMap(validator::validate)</span>
+<span class="fc" id="L28">                .flatMap(body -&gt; addBranchUseCase.execute(franchiseId, body.name()))</span>
+<span class="fc" id="L29">                .map(DtoMapper::toResponse)</span>
+<span class="fc" id="L30">                .flatMap(response -&gt; ServerResponse.created(</span>
+<span class="fc" id="L31">                                request.uriBuilder().path(&quot;/{id}&quot;).build(response.id()))</span>
+<span class="fc" id="L32">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L33">                        .bodyValue(response));</span>
+    }
+
+    public Mono&lt;ServerResponse&gt; updateName(ServerRequest request) {
+<span class="fc" id="L37">        String franchiseId = request.pathVariable(&quot;franchiseId&quot;);</span>
+<span class="fc" id="L38">        String branchId = request.pathVariable(&quot;branchId&quot;);</span>
+<span class="fc" id="L39">        return request.bodyToMono(UpdateNameRequest.class)</span>
+<span class="fc" id="L40">                .flatMap(validator::validate)</span>
+<span class="fc" id="L41">                .flatMap(body -&gt; updateBranchNameUseCase.execute(franchiseId, branchId, body.name()))</span>
+<span class="fc" id="L42">                .map(DtoMapper::toResponse)</span>
+<span class="fc" id="L43">                .flatMap(response -&gt; ServerResponse.ok()</span>
+<span class="fc" id="L44">                        .contentType(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L45">                        .bodyValue(response));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

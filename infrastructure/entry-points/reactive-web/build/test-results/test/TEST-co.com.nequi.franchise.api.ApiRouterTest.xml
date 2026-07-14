@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="co.com.nequi.franchise.api.ApiRouterTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-07-14T22:26:19" hostname="LAPTOP-ANDRE" time="7.659">
+  <properties/>
+  <testcase name="renamesProductAndReturns200()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="7.24"/>
+  <testcase name="translatesDomainStockRuleInto400()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.077"/>
+  <testcase name="translatesDuplicateFranchiseInto409()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.038"/>
+  <testcase name="rejectsMalformedJsonWith400()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.021"/>
+  <testcase name="addsBranchAndReturns201()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.036"/>
+  <testcase name="returns404OnTopStockWhenFranchiseIsUnknown()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.023"/>
+  <testcase name="renamesBranchAndReturns200()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.028"/>
+  <testcase name="updatesStockAndReturns200()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.023"/>
+  <testcase name="translatesMissingFranchiseInto404()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.03"/>
+  <testcase name="createsFranchiseAndReturns201()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.027"/>
+  <testcase name="rejectsBlankFranchiseNameWith400()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.022"/>
+  <testcase name="rejectsNegativeStockOnCreationWith400()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.019"/>
+  <testcase name="addsProductAndReturns201()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.021"/>
+  <testcase name="removesProductAndReturns204()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.013"/>
+  <testcase name="returnsTopStockProductPerBranch()" classname="co.com.nequi.franchise.api.ApiRouterTest" time="0.022"/>
+  <system-out><![CDATA[17:26:22.792 [Test worker] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 8.0.1.Final
+]]></system-out>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\bruno\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.9\dfb8707031008535048bad2b69735f46d0b6c5e5\byte-buddy-agent-1.14.9.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

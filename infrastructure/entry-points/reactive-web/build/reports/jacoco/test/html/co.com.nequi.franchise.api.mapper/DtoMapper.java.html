@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DtoMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">reactive-web</a> &gt; <a href="index.source.html" class="el_package">co.com.nequi.franchise.api.mapper</a> &gt; <span class="el_source">DtoMapper.java</span></div><h1>DtoMapper.java</h1><pre class="source lang-java linenums">package co.com.nequi.franchise.api.mapper;
+
+import co.com.nequi.franchise.api.dto.Responses.BranchResponse;
+import co.com.nequi.franchise.api.dto.Responses.FranchiseResponse;
+import co.com.nequi.franchise.api.dto.Responses.ProductResponse;
+import co.com.nequi.franchise.api.dto.Responses.TopStockProductResponse;
+import co.com.nequi.franchise.model.branch.Branch;
+import co.com.nequi.franchise.model.franchise.Franchise;
+import co.com.nequi.franchise.model.product.Product;
+import co.com.nequi.franchise.model.product.TopStockProduct;
+
+public final class DtoMapper {
+
+    private DtoMapper() {
+    }
+
+    public static FranchiseResponse toResponse(Franchise franchise) {
+<span class="fc" id="L18">        return new FranchiseResponse(franchise.getId(), franchise.getName());</span>
+    }
+
+    public static BranchResponse toResponse(Branch branch) {
+<span class="fc" id="L22">        return new BranchResponse(branch.getId(), branch.getName(), branch.getFranchiseId());</span>
+    }
+
+    public static ProductResponse toResponse(Product product) {
+<span class="fc" id="L26">        return new ProductResponse(product.getId(), product.getName(), product.getStock(), product.getBranchId());</span>
+    }
+
+    public static TopStockProductResponse toResponse(TopStockProduct topStockProduct) {
+<span class="fc" id="L30">        return new TopStockProductResponse(</span>
+<span class="fc" id="L31">                topStockProduct.getBranchId(),</span>
+<span class="fc" id="L32">                topStockProduct.getBranchName(),</span>
+<span class="fc" id="L33">                topStockProduct.getProductId(),</span>
+<span class="fc" id="L34">                topStockProduct.getProductName(),</span>
+<span class="fc" id="L35">                topStockProduct.getStock());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

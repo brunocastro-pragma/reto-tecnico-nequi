@@ -17,19 +17,21 @@ jobs:
         with:
           java-version: '17'
           distribution: temurin
-          cache: maven
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       # The runner has a Docker daemon, so the Testcontainers test runs here for real. Fails below
-      # 70% line coverage.
+      # 90% line coverage.
       - name: Build, test and check coverage
-        run: ./mvnw -B clean verify
+        run: ./gradlew build
 
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-aggregate
-          path: coverage-report/target/site/jacoco-aggregate/
+          path: build/reports/jacoco/aggregate/
 
       - name: Verify the Docker image builds
         run: docker build -f deployment/Dockerfile -t franchise-api:${{ github.sha }} .

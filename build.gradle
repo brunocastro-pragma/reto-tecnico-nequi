@@ -1,0 +1,116 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version "${springBootVersion}" apply false
+    id 'io.spring.dependency-management' version "${dependencyManagementVersion}" apply false
+}
+
+allprojects {
+    group = 'co.com.nequi'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    // java-library, so a module can expose a dependency it passes on (api) and hide the ones it
+    // merely uses (implementation). That distinction is how the layers stay separated.
+    apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: 'io.spring.dependency-management'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        // --release 17, not just target 17: it also checks the code against the Java 17 API, so a
+        // method that only exists in a newer JDK fails at compile time instead of at runtime on
+        // the container. It builds on any JDK 17 or newer, which is why no toolchain is pinned.
+        options.release = 17
+        options.encoding = 'UTF-8'
+    }
+
+    dependencyManagement {
+        imports {
+            // Before the Spring Boot BOM: the first BOM to manage an artifact wins, and Boot's
+            // Testcontainers version bundles a docker-java too old for recent Docker engines.
+            mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+            mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}"
+        }
+    }
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+        testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testImplementation 'io.projectreactor:reactor-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        dependsOn test
+    }
+}
+
+/**
+ * Coverage across the whole project, not per subproject.
+ *
+ * In a multi-project build each subproject only reports on its own code, so :model -- whose
+ * entities are exercised from :usecase's tests -- would show as untested. This task merges the
+ * execution data of every subproject and applies the threshold to the project as a whole.
+ */
+tasks.register('jacocoMergedReport', JacocoReport) {
+    dependsOn subprojects.test
+
+    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.setFrom files(subprojects.sourceSets.main.output).asFileTree.matching {
+        // No logic worth covering: including them inflates the number without testing anything.
+        exclude '**/config/**', '**/dto/**', '**/MainApplication.class'
+    }
+    executionData.setFrom files(subprojects.jacocoTestReport.executionData).filter { it.exists() }
+
+    reports {
+        xml.required = true
+        html.required = true
+        html.outputLocation = layout.buildDirectory.dir('reports/jacoco/aggregate')
+    }
+}
+
+tasks.register('jacocoCoverageVerification', JacocoCoverageVerification) {
+    dependsOn jacocoMergedReport
+
+    classDirectories.setFrom files(subprojects.sourceSets.main.output).asFileTree.matching {
+        exclude '**/config/**', '**/dto/**', '**/MainApplication.class'
+    }
+    executionData.setFrom files(subprojects.jacocoTestReport.executionData).filter { it.exists() }
+
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = jacocoMinimumCoverage.toBigDecimal()
+            }
+        }
+    }
+}
+
+// `gradlew check` (and therefore `gradlew build`) fails when coverage drops below the threshold.
+tasks.named('check') {
+    dependsOn 'jacocoCoverageVerification'
+}

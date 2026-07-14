@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RequestValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">franchise-api</a> &gt; <a href="index.source.html" class="el_package">co.com.nequi.franchise.api.validation</a> &gt; <span class="el_source">RequestValidator.java</span></div><h1>RequestValidator.java</h1><pre class="source lang-java linenums">package co.com.nequi.franchise.api.validation;
+
+import co.com.nequi.franchise.api.exception.InvalidRequestException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+
+/**
+ * With RouterFunctions there is no @Valid, so the body is validated explicitly. The result is a
+ * Mono carrying either the valid body or an error signal -- one more step of the chain.
+ */
+@Component
+@RequiredArgsConstructor
+public class RequestValidator {
+
+    private final Validator validator;
+
+    public &lt;T&gt; Mono&lt;T&gt; validate(T body) {
+<span class="fc" id="L24">        return Flux.fromIterable(validator.validate(body))</span>
+<span class="fc" id="L25">                .map(RequestValidator::describe)</span>
+<span class="fc" id="L26">                .collectList()</span>
+<span class="fc" id="L27">                .flatMap(violations -&gt; Mono.just(violations)</span>
+<span class="fc" id="L28">                        .filter(List::isEmpty)</span>
+<span class="fc" id="L29">                        .map(empty -&gt; body)</span>
+<span class="fc" id="L30">                        .switchIfEmpty(Mono.error(</span>
+<span class="fc" id="L31">                                new InvalidRequestException(String.join(&quot;; &quot;, violations)))));</span>
+    }
+
+    private static &lt;T&gt; String describe(ConstraintViolation&lt;T&gt; violation) {
+<span class="fc" id="L35">        return &quot;%s %s&quot;.formatted(violation.getPropertyPath(), violation.getMessage());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

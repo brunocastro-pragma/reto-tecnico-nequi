@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="co.com.nequi.franchise.usecase.franchise.UpdateFranchiseNameUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-07-14T22:26:20" hostname="LAPTOP-ANDRE" time="0.026">
+  <properties/>
+  <testcase name="renamesFranchiseKeepingItsId()" classname="co.com.nequi.franchise.usecase.franchise.UpdateFranchiseNameUseCaseTest" time="0.017"/>
+  <testcase name="failsWhenFranchiseDoesNotExist()" classname="co.com.nequi.franchise.usecase.franchise.UpdateFranchiseNameUseCaseTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

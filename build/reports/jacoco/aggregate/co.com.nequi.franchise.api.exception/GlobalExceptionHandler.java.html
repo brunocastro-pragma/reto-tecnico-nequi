@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">franchise-api</a> &gt; <a href="index.source.html" class="el_package">co.com.nequi.franchise.api.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package co.com.nequi.franchise.api.exception;
+
+import co.com.nequi.franchise.api.dto.Responses.ErrorResponse;
+import co.com.nequi.franchise.model.exception.DuplicateFranchiseException;
+import co.com.nequi.franchise.model.exception.InvalidStockException;
+import co.com.nequi.franchise.model.exception.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebInputException;
+import org.springframework.web.server.WebExceptionHandler;
+import reactor.core.publisher.Mono;
+
+import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+
+/**
+ * Single place where errors become HTTP responses. @Order(-2) puts it ahead of Spring's
+ * DefaultErrorWebExceptionHandler, which sits at -1 and would answer first with a generic 500.
+ */
+<span class="fc" id="L30">@Slf4j</span>
+@Component
+@Order(-2)
+@RequiredArgsConstructor
+public class GlobalExceptionHandler implements WebExceptionHandler {
+
+    // LinkedHashMap: lookup walks it in order and takes the first assignable type, so the most
+    // specific entries must come first.
+<span class="fc" id="L38">    private static final Map&lt;Class&lt;? extends Throwable&gt;, HttpStatus&gt; STATUS_BY_EXCEPTION = new LinkedHashMap&lt;&gt;();</span>
+
+    static {
+<span class="fc" id="L41">        STATUS_BY_EXCEPTION.put(ResourceNotFoundException.class, HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L42">        STATUS_BY_EXCEPTION.put(InvalidStockException.class, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L43">        STATUS_BY_EXCEPTION.put(DuplicateFranchiseException.class, HttpStatus.CONFLICT);</span>
+<span class="fc" id="L44">        STATUS_BY_EXCEPTION.put(InvalidRequestException.class, HttpStatus.BAD_REQUEST);</span>
+        // Raised by bodyToMono when the JSON is malformed or a field has the wrong type.
+<span class="fc" id="L46">        STATUS_BY_EXCEPTION.put(ServerWebInputException.class, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L47">        STATUS_BY_EXCEPTION.put(CallNotPermittedException.class, HttpStatus.SERVICE_UNAVAILABLE);</span>
+<span class="fc" id="L48">        STATUS_BY_EXCEPTION.put(TimeoutException.class, HttpStatus.GATEWAY_TIMEOUT);</span>
+<span class="fc" id="L49">    }</span>
+
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public Mono&lt;Void&gt; handle(ServerWebExchange exchange, Throwable error) {
+<span class="fc" id="L55">        HttpStatus status = resolveStatus(error);</span>
+
+<span class="fc" id="L57">        return Mono.just(status)</span>
+<span class="fc" id="L58">                .filter(HttpStatus.INTERNAL_SERVER_ERROR::equals)</span>
+<span class="fc" id="L59">                .doOnNext(unknown -&gt; log.error(&quot;Unhandled failure on {}&quot;,</span>
+<span class="fc" id="L60">                        exchange.getRequest().getPath(), error))</span>
+<span class="fc" id="L61">                .then(writeResponse(exchange, status, error));</span>
+    }
+
+    // isAssignableFrom, not an exact class match: the exception that arrives is often a subtype.
+    private HttpStatus resolveStatus(Throwable error) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        for (Map.Entry&lt;Class&lt;? extends Throwable&gt;, HttpStatus&gt; entry : STATUS_BY_EXCEPTION.entrySet()) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            if (entry.getKey().isAssignableFrom(error.getClass())) {</span>
+<span class="fc" id="L68">                return entry.getValue();</span>
+            }
+<span class="fc" id="L70">        }</span>
+        // Spring raises these for anything it can answer on its own -- an unknown path, an
+        // unsupported method. They already carry the right status; reporting them as 500 would
+        // turn &quot;that route does not exist&quot; into &quot;the service is broken&quot;.
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        return error instanceof ResponseStatusException statusException</span>
+<span class="fc" id="L75">                ? HttpStatus.valueOf(statusException.getStatusCode().value())</span>
+<span class="fc" id="L76">                : HttpStatus.INTERNAL_SERVER_ERROR;</span>
+    }
+
+    private Mono&lt;Void&gt; writeResponse(ServerWebExchange exchange, HttpStatus status, Throwable error) {
+<span class="fc" id="L80">        exchange.getResponse().setStatusCode(status);</span>
+<span class="fc" id="L81">        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);</span>
+
+<span class="fc" id="L83">        ErrorResponse body = new ErrorResponse(</span>
+<span class="fc" id="L84">                Instant.now().toString(),</span>
+<span class="fc" id="L85">                status.value(),</span>
+<span class="fc" id="L86">                status.getReasonPhrase(),</span>
+<span class="fc" id="L87">                messageOf(status, error),</span>
+<span class="fc" id="L88">                exchange.getRequest().getPath().value());</span>
+
+<span class="fc" id="L90">        return Mono.fromCallable(() -&gt; objectMapper.writeValueAsBytes(body))</span>
+<span class="fc" id="L91">                .map(bytes -&gt; exchange.getResponse().bufferFactory().wrap(bytes))</span>
+<span class="fc" id="L92">                .flatMap(buffer -&gt; exchange.getResponse().writeWith(Mono.just(buffer)));</span>
+    }
+
+    // A 500 is an unknown failure: its message could leak a SQL fragment or a connection string.
+    private String messageOf(HttpStatus status, Throwable error) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        return HttpStatus.INTERNAL_SERVER_ERROR.equals(status)</span>
+<span class="fc" id="L98">                ? &quot;Unexpected error. Please contact support.&quot;</span>
+<span class="fc" id="L99">                : error.getMessage();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

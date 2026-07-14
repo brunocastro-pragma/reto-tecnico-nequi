@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-07-14T22:26:20" hostname="LAPTOP-ANDRE" time="0.182">
+  <properties/>
+  <testcase name="removesAnExistingProduct()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.032"/>
+  <testcase name="updatesStockOfAnExistingProduct()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.024"/>
+  <testcase name="returnsOneTopProductPerBranch()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.028"/>
+  <testcase name="refusesNegativeStockWithoutTouchingTheDatabase()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.015"/>
+  <testcase name="refusesToAddProductToABranchOfAnotherFranchise()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.009"/>
+  <testcase name="failsTopStockWhenFranchiseDoesNotExist()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.007"/>
+  <testcase name="refusesNegativeStockOnUpdate()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.005"/>
+  <testcase name="refusesToRemoveAProductOfAnotherBranch()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.008"/>
+  <testcase name="addsProductToABranchOfTheFranchise()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.018"/>
+  <testcase name="renamesAnExistingProduct()" classname="co.com.nequi.franchise.usecase.product.ProductUseCasesTest" time="0.014"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

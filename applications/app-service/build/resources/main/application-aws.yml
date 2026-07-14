@@ -1,0 +1,23 @@
+# The database password never travels: only the name of the secret does. The task reads it from
+# Secrets Manager at startup with an IAM role scoped to that single ARN.
+#
+# Host, port and database name DO travel as environment variables. An endpoint reachable only from
+# inside the VPC is not a credential.
+spring:
+  config:
+    # Secret managed and rotated by RDS. Its JSON has two keys: username and password.
+    import: aws-secretsmanager:${DB_SECRET_ARN}
+  r2dbc:
+    # sslMode=require: RDS rejects unencrypted connections (its pg_hba.conf has no entry for
+    # them), and the R2DBC driver connects in the clear unless told otherwise.
+    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslMode=require
+    username: ${username}
+    password: ${password}
+  cloud:
+    aws:
+      region:
+        static: ${AWS_REGION:us-east-1}
+
+logging:
+  level:
+    co.com.nequi.franchise: INFO

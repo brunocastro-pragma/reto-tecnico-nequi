@@ -1,0 +1,12 @@
+// Business rules. Plain Java: no Spring, no persistence, no web.
+dependencies {
+    // api, not implementation: whoever depends on :usecase also needs the domain types that its
+    // methods return.
+    api project(':model')
+    implementation 'io.projectreactor:reactor-core'
+
+    // Not spring-boot-starter-test: pulling Spring in, even for tests, puts the framework on this
+    // module's classpath.
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+}

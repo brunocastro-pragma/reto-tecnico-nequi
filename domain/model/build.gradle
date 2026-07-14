@@ -1,0 +1,6 @@
+// Reactor only: the ports return Mono/Flux. Anything else here breaks the dependency rule, and
+// this file is what enforces it -- Spring is not on the classpath, so a domain class cannot
+// import it even by accident.
+dependencies {
+    implementation 'io.projectreactor:reactor-core'
+}

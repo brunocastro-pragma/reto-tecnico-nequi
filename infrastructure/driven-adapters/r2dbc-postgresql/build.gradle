@@ -1,0 +1,19 @@
+// Driven adapter: implements the domain repository ports over R2DBC.
+dependencies {
+    // :model to implement its ports -- but never :usecase. An adapter is called by the domain,
+    // it does not call the domain back.
+    api project(':model')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation 'org.postgresql:r2dbc-postgresql'
+
+    implementation "io.github.resilience4j:resilience4j-reactor:${resilience4jVersion}"
+    implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    // The top-stock query uses DISTINCT ON, so the integration test needs a real PostgreSQL.
+    testImplementation 'org.testcontainers:postgresql'
+    testImplementation 'org.testcontainers:r2dbc'
+    testImplementation 'org.testcontainers:junit-jupiter'
+}

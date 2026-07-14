@@ -21,6 +21,6 @@ public class OpenApiConfig {
                         Built with Spring WebFlux (RouterFunctions, no controllers), hexagonal \
                         architecture and R2DBC over PostgreSQL. Every endpoint is non-blocking \
                         end to end.""")
-                .contact(new Contact().name("Bruno Ampuero")));
+                .contact(new Contact().name("Bruno Castro")));
     }
 }

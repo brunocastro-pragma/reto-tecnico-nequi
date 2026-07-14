@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BranchRepositoryAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">r2dbc-postgresql</a> &gt; <a href="index.source.html" class="el_package">co.com.nequi.franchise.r2dbc.adapter</a> &gt; <span class="el_source">BranchRepositoryAdapter.java</span></div><h1>BranchRepositoryAdapter.java</h1><pre class="source lang-java linenums">package co.com.nequi.franchise.r2dbc.adapter;
+
+import co.com.nequi.franchise.model.branch.Branch;
+import co.com.nequi.franchise.model.branch.gateways.BranchRepository;
+import co.com.nequi.franchise.r2dbc.mapper.EntityMapper;
+import co.com.nequi.franchise.r2dbc.repository.BranchR2dbcRepository;
+import co.com.nequi.franchise.r2dbc.resilience.ResilienceDecorator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono;
+
+@Repository
+@RequiredArgsConstructor
+public class BranchRepositoryAdapter implements BranchRepository {
+
+    private final BranchR2dbcRepository repository;
+    private final R2dbcEntityTemplate template;
+    private final ResilienceDecorator resilience;
+
+    @Override
+    public Mono&lt;Branch&gt; create(Branch branch) {
+<span class="fc" id="L23">        return resilience.decorate(</span>
+<span class="fc" id="L24">                template.insert(EntityMapper.toEntity(branch))</span>
+<span class="fc" id="L25">                        .map(EntityMapper::toDomain));</span>
+    }
+
+    @Override
+    public Mono&lt;Branch&gt; update(Branch branch) {
+<span class="fc" id="L30">        return resilience.decorate(</span>
+<span class="fc" id="L31">                template.update(EntityMapper.toEntity(branch))</span>
+<span class="fc" id="L32">                        .map(EntityMapper::toDomain));</span>
+    }
+
+    @Override
+    public Mono&lt;Branch&gt; findById(String id) {
+<span class="fc" id="L37">        return resilience.decorate(</span>
+<span class="fc" id="L38">                repository.findById(id)</span>
+<span class="fc" id="L39">                        .map(EntityMapper::toDomain));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

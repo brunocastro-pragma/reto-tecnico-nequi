@@ -1,0 +1,26 @@
+// Composition root: the only module that knows every other one, and the only executable one.
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    implementation project(':usecase')
+    implementation project(':reactive-web')
+    implementation project(':r2dbc-postgresql')
+
+    // Declared here, not inherited: Gradle does not leak a module's `implementation` dependencies
+    // to its consumers, and this module's own configuration classes use both -- the schema
+    // initializer needs the R2DBC types, and OpenApiConfig builds the OpenAPI document.
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${springdocVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    // Required by the Resilience4j starter that binds the thresholds in application.yml.
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // Reads the database credentials from Secrets Manager at startup (aws profile only).
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-secrets-manager'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+bootJar {
+    archiveFileName = 'franchise-api.jar'
+}

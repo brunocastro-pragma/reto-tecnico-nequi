@@ -41,7 +41,7 @@ Dependencies point inward, always. The domain knows nothing about Spring, about 
               └──────────────────────────────────────────┘
 ```
 
-The rule is enforced by the build, not by discipline: `domain/model` only declares `reactor-core` in its `pom.xml`, so a domain entity *cannot* import Spring — the class is not on its classpath.
+The rule is enforced by the build, not by discipline: `domain/model` only declares `reactor-core` in its `build.gradle`, so a domain entity *cannot* import Spring — the class is not on its classpath.
 
 A request travels like this:
 
@@ -64,10 +64,10 @@ The whole trip is a single `Mono`/`Flux` chain. Nothing is computed until Netty 
 domain/            the business core: entities, ports, use cases
 infrastructure/    the adapters of the hexagon -- Java code
 applications/      the runnable Spring Boot application
-coverage-report/   aggregated coverage and the 70% gate
 deployment/        the Dockerfile
 terraform/         the AWS infrastructure
 docs/              Postman collection
+build.gradle       the aggregated coverage report and the 90% gate
 ```
 
 `infrastructure/` is the hexagonal layer — handlers and repository adapters. The cloud
@@ -82,7 +82,10 @@ infrastructure is a different thing entirely and lives in `terraform/`.
 | `infrastructure/entry-points/reactive-web` | `RouterFunction`, handlers, DTOs, validation, error handling | `usecase` |
 | `infrastructure/driven-adapters/r2dbc-postgresql` | Repository adapters, R2DBC entities, resilience | `model` |
 | `applications/app-service` | Composition root: bean wiring, configuration | all |
-| `coverage-report` | Aggregated JaCoCo report and the coverage gate | all |
+
+The layout is the Bancolombia clean architecture scaffold: one Gradle subproject per layer, each
+with its own `build.gradle`. The dependency rule is enforced by the build — `:model` declares
+nothing but Reactor, so Spring is not on its classpath and a domain class cannot import it.
 
 ---
 
@@ -97,7 +100,7 @@ infrastructure is a different thing entirely and lives in `terraform/`.
 | Docs | springdoc-openapi 2.6.0 |
 | Tests | JUnit 5, Mockito, **StepVerifier**, WebTestClient, Testcontainers |
 | Coverage | JaCoCo, gate at 90% lines |
-| Build | Maven (multi-module) |
+| Build | Gradle (multi-project, Bancolombia scaffold) |
 | Infrastructure | Docker, ECR, ECS Fargate, ALB, RDS, Secrets Manager, Terraform |
 
 ---
@@ -145,7 +148,7 @@ The build needs nothing but a JDK 17+ — the tests bring their own PostgreSQL t
 Testcontainers, so they do not need the deployed database:
 
 ```bash
-./mvnw clean verify
+./gradlew build
 ```
 
 ---
@@ -197,7 +200,7 @@ Nested routes are checked for ownership: renaming branch `B` under franchise `F`
 ## Tests
 
 ```bash
-./mvnw clean verify
+./gradlew build
 ```
 
 | Layer | How it is tested |
@@ -209,7 +212,7 @@ Nested routes are checked for ownership: renaming branch `B` under franchise `F`
 
 No test calls `.block()`. Reactive flows are asserted with `StepVerifier`, which is the only way to assert on the *signals* — including "this Mono is empty" and "this Mono errors with X", neither of which `.block()` can express.
 
-The aggregated coverage report lands in `coverage-report/target/site/jacoco-aggregate/index.html`, and the build **fails** below 90% line coverage.
+The aggregated coverage report lands in `build/reports/jacoco/aggregate/index.html`, and the build **fails** below 90% line coverage.
 
 > The Testcontainers test **skips itself** if it cannot reach a Docker daemon, so a machine without Docker still gets a green build. In CI, where Docker is always present, it runs for real.
 
