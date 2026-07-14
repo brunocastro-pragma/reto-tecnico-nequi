@@ -35,7 +35,7 @@
         <testcontainers.version>1.21.3</testcontainers.version>
 
         <jacoco.version>0.8.12</jacoco.version>
-        <jacoco.line.coverage>0.70</jacoco.line.coverage>
+        <jacoco.line.coverage>0.90</jacoco.line.coverage>
     </properties>
 
     <dependencyManagement>

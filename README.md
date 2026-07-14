@@ -96,7 +96,7 @@ infrastructure is a different thing entirely and lives in `terraform/`.
 | Resilience | Resilience4j 2.2.0 (reactive operators) |
 | Docs | springdoc-openapi 2.6.0 |
 | Tests | JUnit 5, Mockito, **StepVerifier**, WebTestClient, Testcontainers |
-| Coverage | JaCoCo, gate at 70% lines |
+| Coverage | JaCoCo, gate at 90% lines |
 | Build | Maven (multi-module) |
 | Infrastructure | Docker, ECR, ECS Fargate, ALB, RDS, Secrets Manager, Terraform |
 
@@ -209,7 +209,7 @@ Nested routes are checked for ownership: renaming branch `B` under franchise `F`
 
 No test calls `.block()`. Reactive flows are asserted with `StepVerifier`, which is the only way to assert on the *signals* — including "this Mono is empty" and "this Mono errors with X", neither of which `.block()` can express.
 
-The aggregated coverage report lands in `coverage-report/target/site/jacoco-aggregate/index.html`, and the build **fails** below 70% line coverage.
+The aggregated coverage report lands in `coverage-report/target/site/jacoco-aggregate/index.html`, and the build **fails** below 90% line coverage.
 
 > The Testcontainers test **skips itself** if it cannot reach a Docker daemon, so a machine without Docker still gets a green build. In CI, where Docker is always present, it runs for real.
 

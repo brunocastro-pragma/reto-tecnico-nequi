@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebInputException;
 import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
@@ -67,7 +68,12 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
                 return entry.getValue();
             }
         }
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        // Spring raises these for anything it can answer on its own -- an unknown path, an
+        // unsupported method. They already carry the right status; reporting them as 500 would
+        // turn "that route does not exist" into "the service is broken".
+        return error instanceof ResponseStatusException statusException
+                ? HttpStatus.valueOf(statusException.getStatusCode().value())
+                : HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     private Mono<Void> writeResponse(ServerWebExchange exchange, HttpStatus status, Throwable error) {
