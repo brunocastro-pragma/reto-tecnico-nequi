@@ -23,15 +23,14 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        // The toolchain pins the compiler to Java 17: the build produces 17 bytecode regardless of
+        // the JDK the developer launched Gradle with. If no 17 is installed, Gradle downloads one.
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
     }
 
     tasks.withType(JavaCompile).configureEach {
-        // --release 17, not just target 17: it also checks the code against the Java 17 API, so a
-        // method that only exists in a newer JDK fails at compile time instead of at runtime on
-        // the container. It builds on any JDK 17 or newer, which is why no toolchain is pinned.
-        options.release = 17
         options.encoding = 'UTF-8'
     }
 

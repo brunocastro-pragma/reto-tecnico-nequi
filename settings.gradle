@@ -1,3 +1,9 @@
+plugins {
+    // Lets Gradle download a matching JDK when the toolchain (Java 17) is not already installed,
+    // so the build is self-contained: a fresh clone needs only the Gradle wrapper.
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
 rootProject.name = 'franchise-api'
 
 // One Gradle subproject per layer of the scaffold. The boundary between layers is the build:
