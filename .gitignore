@@ -1,7 +1,8 @@
-# Gradle build outputs. The trailing slash matters: it matches the build/ directories and never
-# the build.gradle files.
+# Build outputs. The trailing slash matters: it matches the build/ directories and never the
+# build.gradle files.
 build/
 .gradle/
+target/
 !gradle/wrapper/gradle-wrapper.jar
 
 .idea/
