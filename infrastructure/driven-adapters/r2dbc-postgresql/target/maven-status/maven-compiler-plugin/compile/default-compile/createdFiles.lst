@@ -1,0 +1,15 @@
+co\com\nequi\franchise\r2dbc\entity\BranchEntity.class
+co\com\nequi\franchise\r2dbc\mapper\EntityMapper.class
+co\com\nequi\franchise\r2dbc\entity\TopStockRow.class
+co\com\nequi\franchise\r2dbc\entity\ProductEntity.class
+co\com\nequi\franchise\r2dbc\adapter\FranchiseRepositoryAdapter.class
+co\com\nequi\franchise\r2dbc\adapter\ProductRepositoryAdapter.class
+co\com\nequi\franchise\r2dbc\repository\FranchiseR2dbcRepository.class
+co\com\nequi\franchise\r2dbc\adapter\BranchRepositoryAdapter.class
+co\com\nequi\franchise\r2dbc\entity\FranchiseEntity.class
+co\com\nequi\franchise\r2dbc\entity\ProductEntity$ProductEntityBuilder.class
+co\com\nequi\franchise\r2dbc\resilience\ResilienceDecorator.class
+co\com\nequi\franchise\r2dbc\entity\BranchEntity$BranchEntityBuilder.class
+co\com\nequi\franchise\r2dbc\repository\ProductR2dbcRepository.class
+co\com\nequi\franchise\r2dbc\repository\BranchR2dbcRepository.class
+co\com\nequi\franchise\r2dbc\entity\FranchiseEntity$FranchiseEntityBuilder.class

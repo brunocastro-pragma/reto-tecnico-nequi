@@ -1,5 +1,8 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
+# Gradle build outputs. The trailing slash matters: it matches the build/ directories and never
+# the build.gradle files.
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
 
 .idea/
 *.iml

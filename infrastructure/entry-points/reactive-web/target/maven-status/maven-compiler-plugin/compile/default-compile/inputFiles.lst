@@ -1,0 +1,10 @@
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\ApiRouter.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\BranchHandler.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\dto\Requests.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\dto\Responses.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\exception\GlobalExceptionHandler.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\exception\InvalidRequestException.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\FranchiseHandler.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\mapper\DtoMapper.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\ProductHandler.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\entry-points\reactive-web\src\main\java\co\com\nequi\franchise\api\validation\RequestValidator.java

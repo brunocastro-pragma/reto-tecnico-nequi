@@ -1,0 +1,12 @@
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\adapter\BranchRepositoryAdapter.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\adapter\FranchiseRepositoryAdapter.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\adapter\ProductRepositoryAdapter.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\entity\BranchEntity.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\entity\FranchiseEntity.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\entity\ProductEntity.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\entity\TopStockRow.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\mapper\EntityMapper.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\repository\BranchR2dbcRepository.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\repository\FranchiseR2dbcRepository.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\repository\ProductR2dbcRepository.java
+C:\Users\bruno\OneDrive\Desktop\TRABAJO\PRAGMA\NEQUI\reto-tecnico\infrastructure\driven-adapters\r2dbc-postgresql\src\main\java\co\com\nequi\franchise\r2dbc\resilience\ResilienceDecorator.java

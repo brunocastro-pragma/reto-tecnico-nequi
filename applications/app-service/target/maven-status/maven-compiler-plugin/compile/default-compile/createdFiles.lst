@@ -1,0 +1,4 @@
+co\com\nequi\franchise\config\UseCaseConfig.class
+co\com\nequi\franchise\config\SchemaInitializerConfig.class
+co\com\nequi\franchise\MainApplication.class
+co\com\nequi\franchise\config\OpenApiConfig.class

@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+usecase,co.com.nequi.franchise.usecase.branch,UpdateBranchNameUseCase,0,22,0,0,0,3,0,2,0,2
+usecase,co.com.nequi.franchise.usecase.branch,AddBranchUseCase,0,30,0,0,0,8,0,2,0,2
+usecase,co.com.nequi.franchise.usecase.shared,OwnershipResolver,0,43,0,0,0,7,0,5,0,5
+usecase,co.com.nequi.franchise.usecase.product,StockRule,0,18,0,2,0,3,0,3,0,2
+usecase,co.com.nequi.franchise.usecase.product,AddProductUseCase,0,39,0,0,0,9,0,3,0,3
+usecase,co.com.nequi.franchise.usecase.product,GetTopStockProductsUseCase,0,18,0,0,0,4,0,1,0,1
+usecase,co.com.nequi.franchise.usecase.product,UpdateProductStockUseCase,0,32,0,0,0,4,0,3,0,3
+usecase,co.com.nequi.franchise.usecase.product,UpdateProductNameUseCase,0,23,0,0,0,3,0,2,0,2
+usecase,co.com.nequi.franchise.usecase.product,RemoveProductUseCase,0,16,0,0,0,3,0,1,0,1
+usecase,co.com.nequi.franchise.usecase.franchise,CreateFranchiseUseCase,0,38,0,2,0,8,0,4,0,3
+usecase,co.com.nequi.franchise.usecase.franchise,UpdateFranchiseNameUseCase,0,25,0,0,0,4,0,2,0,2
