@@ -8,6 +8,7 @@ import co.com.nequi.franchise.model.branch.Branch;
 import co.com.nequi.franchise.model.franchise.Franchise;
 import co.com.nequi.franchise.model.product.Product;
 import co.com.nequi.franchise.model.product.TopStockProduct;
+import reactor.core.publisher.Flux;
 
 public final class DtoMapper {
 

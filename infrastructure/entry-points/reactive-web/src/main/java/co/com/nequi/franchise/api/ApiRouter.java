@@ -11,11 +11,13 @@ import co.com.nequi.franchise.api.dto.Responses.FranchiseResponse;
 import co.com.nequi.franchise.api.dto.Responses.ProductResponse;
 import co.com.nequi.franchise.api.dto.Responses.TopStockProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 import org.springframework.context.annotation.Bean;
@@ -55,13 +57,13 @@ public class ApiRouter {
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = CreateFranchiseRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201",
+                                    @ApiResponse(responseCode = "201",
                                             description = "Franchise created",
                                             content = @Content(schema = @Schema(implementation = FranchiseResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400",
+                                    @ApiResponse(responseCode = "400",
                                             description = "Blank or too long name",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409",
+                                    @ApiResponse(responseCode = "409",
                                             description = "A franchise with that name already exists",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -70,15 +72,15 @@ public class ApiRouter {
                     beanClass = FranchiseHandler.class, beanMethod = "updateName",
                     operation = @Operation(operationId = "updateFranchiseName", tags = TAG_FRANCHISE,
                             summary = "Update the name of a franchise",
-                            parameters = @io.swagger.v3.oas.annotations.Parameter(name = "franchiseId",
+                            parameters = @Parameter(name = "franchiseId",
                                     in = ParameterIn.PATH, required = true),
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = UpdateNameRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                                    @ApiResponse(responseCode = "200",
                                             description = "Franchise updated",
                                             content = @Content(schema = @Schema(implementation = FranchiseResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Franchise not found",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -87,15 +89,15 @@ public class ApiRouter {
                     beanClass = BranchHandler.class, beanMethod = "add",
                     operation = @Operation(operationId = "addBranch", tags = TAG_BRANCH,
                             summary = "Add a branch to a franchise",
-                            parameters = @io.swagger.v3.oas.annotations.Parameter(name = "franchiseId",
+                            parameters = @Parameter(name = "franchiseId",
                                     in = ParameterIn.PATH, required = true),
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = CreateBranchRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201",
+                                    @ApiResponse(responseCode = "201",
                                             description = "Branch created",
                                             content = @Content(schema = @Schema(implementation = BranchResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Franchise not found",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -107,10 +109,10 @@ public class ApiRouter {
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = UpdateNameRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                                    @ApiResponse(responseCode = "200",
                                             description = "Branch updated",
                                             content = @Content(schema = @Schema(implementation = BranchResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Branch not found in that franchise",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -122,13 +124,13 @@ public class ApiRouter {
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = CreateProductRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201",
+                                    @ApiResponse(responseCode = "201",
                                             description = "Product created",
                                             content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400",
+                                    @ApiResponse(responseCode = "400",
                                             description = "Negative stock",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Branch not found in that franchise",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -138,9 +140,9 @@ public class ApiRouter {
                     operation = @Operation(operationId = "removeProduct", tags = TAG_PRODUCT,
                             summary = "Remove a product from a branch",
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204",
+                                    @ApiResponse(responseCode = "204",
                                             description = "Product removed"),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Product not found in that branch",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -152,13 +154,13 @@ public class ApiRouter {
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = UpdateStockRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                                    @ApiResponse(responseCode = "200",
                                             description = "Stock updated",
                                             content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400",
+                                    @ApiResponse(responseCode = "400",
                                             description = "Negative stock",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Product not found in that branch",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -170,10 +172,10 @@ public class ApiRouter {
                             requestBody = @RequestBody(required = true,
                                     content = @Content(schema = @Schema(implementation = UpdateNameRequest.class))),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                                    @ApiResponse(responseCode = "200",
                                             description = "Product updated",
                                             content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Product not found in that branch",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             })),
@@ -182,14 +184,14 @@ public class ApiRouter {
                     beanClass = ProductHandler.class, beanMethod = "topStock",
                     operation = @Operation(operationId = "getTopStockProducts", tags = TAG_PRODUCT,
                             summary = "Get the product with the highest stock of each branch of a franchise",
-                            parameters = @io.swagger.v3.oas.annotations.Parameter(name = "franchiseId",
+                            parameters = @Parameter(name = "franchiseId",
                                     in = ParameterIn.PATH, required = true),
                             responses = {
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
+                                    @ApiResponse(responseCode = "200",
                                             description = "One entry per branch",
                                             content = @Content(array = @ArraySchema(
                                                     schema = @Schema(implementation = TopStockProductResponse.class)))),
-                                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404",
+                                    @ApiResponse(responseCode = "404",
                                             description = "Franchise not found",
                                             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
                             }))

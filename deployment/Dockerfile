@@ -39,7 +39,7 @@ EXPOSE 8080
 # MaxRAMPercentage rather than a fixed -Xmx: the heap follows the memory the task is given, so
 # resizing the Fargate task does not mean rebuilding the image.
 ENV JAVA_OPTS="-XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport"
-ENV SPRING_PROFILES_ACTIVE=aws
+ENV SPRING_PROFILES_ACTIVE=prod
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
     CMD wget -q --spider http://localhost:8080/actuator/health || exit 1

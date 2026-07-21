@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "this" {
     # No secrets: the endpoint of a database in a private subnet is not a credential, and the ARN
     # is a pointer the application resolves against Secrets Manager at startup.
     environment = [
-      { name = "SPRING_PROFILES_ACTIVE", value = "aws" },
+      { name = "SPRING_PROFILES_ACTIVE", value = var.spring_profile },
       { name = "AWS_REGION", value = var.aws_region },
       { name = "DB_HOST", value = var.database_host },
       { name = "DB_PORT", value = tostring(var.database_port) },

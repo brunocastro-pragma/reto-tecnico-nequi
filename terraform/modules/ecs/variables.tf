@@ -13,6 +13,12 @@ variable "image" {
   type        = string
 }
 
+variable "spring_profile" {
+  description = "Spring profile the container runs with. Selects application-{profile}.yml."
+  type        = string
+  default     = "prod"
+}
+
 variable "container_name" {
   description = "Name of the container inside the task."
   type        = string
